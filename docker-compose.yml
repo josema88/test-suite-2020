@@ -29,7 +29,7 @@ services:
     image: josemaord/test-suite-2020:latest
     container_name: test-suite
     volumes:
-      - /tmp/reports:/test-suite/temp-reports
+      - /tmp/reports:/test-suite-2020/temp-reports
     command: ["${TEST_GROUP}"]
     depends_on:
       - chrome
