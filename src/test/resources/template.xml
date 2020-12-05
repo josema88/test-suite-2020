@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite
+    name="AQA TestSuite"
+    preserve-order="true"
+    allow-return-values="true"
+    verbose="1"
+    parallel="instances"
+    thread-count="2"
+>
+
+    <!-- ### TestName parameter used in some test cases to decide the behavior ###-->
+    {% if testName -%}
+    <parameter name="testName" value="{{testName}}"/>
+    {% endif -%}
+    {% if filesToAttach -%}
+    <parameter name="filesToAttach" value="{{filesToAttach}}"/>
+    {% endif -%}
+    {% if projectName -%}
+    <parameter name="projectName" value="{{projectName}}"/>
+    {% endif -%}
+    {% if includedGroups -%}
+    <parameter name="includedGroups" value="{{includedGroups}}"/>
+    {% endif -%}
+    {% if build -%}
+    <parameter name="build" value="{{build}}"/>
+    {% endif -%}
+    {% if browsers -%}
+    <parameter name="browsers" value="{{browsers}}"/>
+    {% endif -%}
+    {% if runOn -%}
+    <parameter name="runOn" value="{{runOn}}"/>
+    {% endif -%}
+
+    <!-- ###  General test block. Test block for most of test cases.  ### -->
+    <test name="{{testName}}">
+        {% if groupsToRun|length > 0 or groupsToExclude|length > 0 %}
+        <groups>
+            <run>
+                {% for group in groupsToRun -%}
+                <include name="{{ group }}"/>
+                {% endfor -%}
+                {% for group in groupsToExclude -%}
+                <exclude name="{{ group }}"/>
+                {% endfor -%}
+            </run>
+        </groups>
+        {% endif %}
+        <classes>
+           <class name="factories.TestFactory"/>
+        </classes>
+    </test>
+</suite>
+

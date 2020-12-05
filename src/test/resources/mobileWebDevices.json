@@ -1,0 +1,14 @@
+{
+  "IPHONE_6_7_8" : {
+    "mobileId": "IPHONE_6_7_8",
+    "width": 375,
+    "height": 667,
+    "browser": "CHROME"
+  },
+  "IPHONE_6_7_8_PLUS": {
+    "mobileId": "IPHONE_6_7_8_PLUS",
+    "width": 414,
+    "height": 736,
+    "browser": "CHROME"
+  }
+}

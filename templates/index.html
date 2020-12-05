@@ -1,0 +1,163 @@
+<html lang="es" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>My Project - Testing</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-light bg-faded  bg-light" style="background-color: blue !important;">
+    <a class="navbar-brand" href="#" style="color: white;">My Project - Testing</a>
+
+</nav>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4> My Project Test Results</h4>
+            <hr />
+            <h4> Execution Date: {{ date }}</h4>
+        </div>
+    </div>
+    <hr />
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <canvas id="myChart"></canvas>
+            <script>
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Passed", "Failed", "Skipped"],
+                datasets: [{
+                    data: [{{totalPassed}}, {{totalFailed}}, {{totalSkipped}}],
+                    backgroundColor: [
+                        'rgba(39, 174, 96, 0.8)',
+                        'rgba(231, 76, 60, 0.8)',
+                        'rgba(52, 152, 219, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(39, 174, 96, 1)',
+                        'rgba(231, 76, 60,1)',
+                        'rgba(52, 152, 219, 1)',
+                    ],
+                    borderWidth: 2
+                }]
+            }
+        });
+        </script>
+        </div>
+    </div>
+    <hr />
+    <div id="accordion" role="tablist">
+        {% for suite in suites %}
+        <div class="card">
+            <div class="card-header" role="tab" style="padding-bottom: 0px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            {{ suite.getName() }}
+                        </h5>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-right" style="color: #27ae60;">
+                            Passed
+                            &#10004; : {{ suite.getPassed() }}
+                        </p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-right" style="color: #e74c3c;">
+                            Failed
+                            &#10006; : {{ suite.getFailed() }}
+                        </p>
+                    </div>
+                    <div class="col-md-2">
+                        <p class="text-right" style="color: #3498db;">
+                            Skipped
+                            &#10149; : {{ suite.getSkipped() }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% for test in suite.getResults() %}
+        <div class="card">
+            <div class="card-header" role="tab" id="heading{{ suite.getName() }}{{loop.index + 1}}" style="padding-bottom: 0px;">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h6 class="mb-0">
+                            <a data-toggle="collapse" href="#collapse{{ suite.getName() }}{{loop.index + 1}}" aria-expanded="false" aria-controls="collapse{{ suite.getName() }}{{loop.index + 1}}">
+                                {{ test.getName() }}
+                            </a>
+                        </h6>
+                        <p>{{ test.getBrowser }}</p>
+                    </div>
+                    <div class="col-md-2">
+                        {% if test.status == "2" %}
+                        <p class="text-right" style="font-size: 20px;color: #e74c3c;">
+                            &#10006;
+                        </p>
+                        {% else if test.status == "1" %}
+                        <p class="text-right" style="font-size: 20px;color: #27ae60;;">
+                            &#10004;
+                        </p>
+                        {% else %}
+                        <p class="text-right" style="font-size: 20px;color: #3498db;">
+                            &#10149;
+                        </p>
+                        {% end %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="collapse{{ suite.getName() }}{{loop.index + 1}}" class="collapse" role="tabpanel" aria-labelledby="heading{{ suite.getName() }}{{loop.index + 1}}"  data-parent="#accordion">
+                <div class="card-body">
+
+                    <strong> Result </strong>
+                    <br />
+                    {% if test.status == "2" %}
+                    <p  style="font-size: 15px;color: #e74c3c;">
+                        &#10006; - Failed
+                    </p>
+                    {% else if test.status == "1" %}
+                    <p  style="font-size: 15px;color: #27ae60;">
+                        &#10004; - Passed
+                    </p>
+                    {% else %}
+                    <p  style="font-size: 15px;color: #3498db;">
+                        &#10149; - Skipped
+                    </p>
+                    {% end %}
+                    <strong> Description </strong>
+                    <br />
+                    <p>
+                        {{ test.getDescription() }}
+                    </p>
+                    <strong> Output </strong>
+                    <br />
+                    <ul>
+                        {{ test.getLog() }}
+                    </ul>
+                    {% if test.status == "2" %}
+                    <strong> Error </strong>
+                    <br />
+                    <samp style="color:red"> {{ test.getOutput() }} </samp>
+                    {% end %}
+                </div>
+            </div>
+        </div>
+        {% end %}
+        {% end %}
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  {% if browsers -%}
+  "browsers": "{{browsers}}",
+  {% endif -%}
+  "project": "Car-Values",
+  {% if projectName -%}
+  "projectName": "{{projectName}}",
+  {% endif -%}
+  "writeDB":"true",
+  {% if filesToAttach -%}
+  "filesToAttach": "{{filesToAttach}}",
+  {% endif -%}
+  {% if emailTemplate -%}
+  "emailTemplate": "emailTemplate.html",
+  {% endif -%}
+}
